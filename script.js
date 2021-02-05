@@ -14,8 +14,6 @@ async function getSearchInfo(search) {
     let weatherInsert = document.querySelector('#weatherInfo');
     let fiveDayWeather = document.querySelector('#fiveForecast');
 
-
-   
     // Fetching five day forecast
     fiveDay = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${search}&appid=4859272ebb346a7ffe3fc36be25d8376`).then(r => r.json())
     console.log(fiveDay)
@@ -24,8 +22,9 @@ async function getSearchInfo(search) {
     console.log(weatherData)
     // Fetching UV index
     uvIndex = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&exclude={part}&appid=4859272ebb346a7ffe3fc36be25d8376`).then(r => r.json())
-    
     console.log(uvIndex)
+    
+    //Card showing current weather for searched location
     weatherInsert.innerHTML =
       ` <div class="header"> Today's Weather:</div>
         <div class="card" id="todayWeather" style="width: 500px; height: 500px;">
@@ -41,7 +40,7 @@ async function getSearchInfo(search) {
             </div>
         </div>`
     
-
+    //Cards showing the 5 day forecast
     fiveDayWeather.innerHTML = `
         <div class="header"> 5-Day Forecast:</div>
         <div class="card my-1" id="fiveCard" style = "width: 18rem;">
@@ -90,7 +89,7 @@ async function getSearchInfo(search) {
             </div>
         </div>`
 
-
+    // Only pushes results to array if the search result hasn't been searched for
     if (cityArray.indexOf(search) === -1) {
         cityArray.push(search)
         addToList(search);
@@ -99,9 +98,8 @@ async function getSearchInfo(search) {
     localStorage.setItem('weatherList', JSON.stringify(cityArray));
 }
 
-
 getParse();
-
+// Repopulates the saved searches when reloaded
 function getParse() {
     var jParse = JSON.parse(localStorage.getItem('weatherList')) || [];
 
@@ -110,12 +108,9 @@ function getParse() {
     }
 }
 
-
-
 document.querySelector('#cityList').addEventListener('click', function (event) {
     getSearchInfo(event.target.textContent);
 })
-
 
 function addToList(search) {
     document.querySelector('#cityList').innerHTML += `<li class="list-group-item"><button class="cityButton">${search}</button></li>`
